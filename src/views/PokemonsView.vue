@@ -8,7 +8,6 @@
 	import PokemonCards from "../components/PokemonCards.vue";
 	import config from "../config";
 	import { useRouter } from "vue-router";
-	import { useDebounce } from "../composables/useDebounce";
 
 	const router = useRouter();
 
