@@ -8,13 +8,14 @@
 	import PokemonCards from "../components/PokemonCards.vue";
 	import config from "../config";
 	import { useRouter } from "vue-router";
+	import { useDebounce } from "../composables/useDebounce";
 
 	const router = useRouter();
 
 	const pokemons = ref([]);
 	const nextURL = ref(config.POKE_API);
 	const isLoadingPokemons = ref(false);
-	const pokemonName = ref(null);
+	let typingTimer;
 
 	async function fetchPokemons(url) {
 		isLoadingPokemons.value = true;
@@ -25,15 +26,15 @@
 	}
 
 	async function searchPokemon(event) {
-		const form = new FormData(event.target);
-		const pokemon = form.get("search-pokemon")?.toLocaleLowerCase();
-
-		await router.push({
-			name: "pokemon",
-			params: {
-				name: pokemon,
-			},
-		});
+		clearTimeout(typingTimer);
+		typingTimer = setTimeout(() => {
+			router.push({
+				name: "pokemon",
+				params: {
+					name: event.target.value,
+				},
+			});
+		}, 500);
 	}
 
 	onMounted(() => {
@@ -46,15 +47,31 @@
 			<div class="py-5 flex justify-between flex-wrap">
 				<h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-50">Pokedex</h1>
 				<div class="flex items-center gap-2 mt-5 sm:mt-0">
-					<form @submit.prevent="searchPokemon">
-						<Input type="search" placeholder="Busque um pokemon" name="search-pokemon" />
-					</form>
+					<Input type="search" @input="searchPokemon" placeholder="Busque um pokemon" name="search-pokemon">
+						<template #left-addon>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="w-6 h-6 dark:text-gray-300"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+								/>
+							</svg>
+						</template>
+					</Input>
+
 					<DarkModeButton />
 				</div>
 			</div>
 			<div class="max-w-7xl mx-auto">
 				<PokemonCardsLoading v-if="!pokemons.length && isLoadingPokemons" />
-				<PokemonCards v-else :pokemons="pokemons" @selected-pokemon="(e) => (pokemonName = e)" />
+				<PokemonCards v-else :pokemons="pokemons" />
 			</div>
 		</div>
 		<div

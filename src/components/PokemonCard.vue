@@ -8,8 +8,6 @@
 			default: 1,
 		},
 	});
-
-	const emit = defineEmits(["selected-pokemon"]);
 </script>
 <template>
 	<router-link :to="{ name: 'pokemon', params: { name: pokemon.name } }">
