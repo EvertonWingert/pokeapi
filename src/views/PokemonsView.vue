@@ -1,5 +1,5 @@
 <script setup>
-	import { onMounted, ref, watch } from "vue";
+	import { onMounted, onUnmounted, ref, watch } from "vue";
 	import Button from "../components/Button.vue";
 	import DarkModeButton from "../components/DarkModeButton.vue";
 	import Input from "../components/Input.vue";
@@ -14,6 +14,7 @@
 	const pokemons = ref([]);
 	const nextURL = ref(config.POKE_API);
 	const isLoadingPokemons = ref(false);
+	const isTyping = ref(false);
 	let typingTimer;
 
 	async function fetchPokemons(url) {
@@ -25,8 +26,10 @@
 	}
 
 	async function searchPokemon(event) {
+		isTyping.value = true;
 		clearTimeout(typingTimer);
 		typingTimer = setTimeout(() => {
+			isTyping.value = false;
 			router.push({
 				name: "pokemon",
 				params: {
@@ -39,6 +42,10 @@
 	onMounted(() => {
 		fetchPokemons(nextURL.value);
 	});
+
+	onUnmounted(() => {
+		clearTimeout(typingTimer);
+	});
 </script>
 <template>
 	<main class="relative">
@@ -46,7 +53,7 @@
 			<div class="py-5 flex justify-between flex-wrap">
 				<h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-50">Pokedex</h1>
 				<div class="flex items-center gap-2 mt-5 sm:mt-0">
-					<Input type="search" @input="searchPokemon" placeholder="Busque um pokemon" name="search-pokemon">
+					<Input type="text" @input="searchPokemon" placeholder="Busque um pokemon" name="search-pokemon">
 						<template #left-addon>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -60,6 +67,30 @@
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+								/>
+							</svg>
+						</template>
+						<template #right-addon>
+							<svg
+								v-if="isTyping"
+								class="w-5 h-5 text-indigo-500 animate-spin dark:text-indigo-300 mr-2"
+								v-bind="$attrs"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+								/>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								/>
 							</svg>
 						</template>
