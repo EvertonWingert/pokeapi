@@ -49,7 +49,28 @@
 		<main class="relative">
 			<div class="py-6 px-4 sm:px-6 md:px-8">
 				<div class="py-5 flex justify-between flex-wrap">
-					<h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-50">Pokedex</h1>
+					<button
+						@click="(pokemonName = null), (currentPokemon = null)"
+						v-if="pokemonName && currentPokemon"
+						class="flex gap-2 items-center"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="w-6 h-6 dark:text-gray-300"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+							/>
+						</svg>
+						<span class="dark:text-gray-300 text-sm font-semibold">Voltar</span>
+					</button>
+					<h1 v-else class="text-2xl font-semibold text-gray-900 dark:text-gray-50">Pokedex</h1>
 					<div class="flex items-center gap-2 mt-5 sm:mt-0">
 						<Input
 							type="search"
