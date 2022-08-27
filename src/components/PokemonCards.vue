@@ -1,5 +1,5 @@
 <script setup>
-	import Pokemon from "./Pokemon.vue";
+	import PokemonCard from "./PokemonCard.vue";
 	defineProps({
 		pokemons: {
 			type: Array,
@@ -12,7 +12,7 @@
 <template>
 	<ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
 		<li v-for="(pokemon, index) in pokemons" :key="pokemon.name" class="relative">
-			<Pokemon
+			<PokemonCard
 				:pokemon="pokemon"
 				:index="index + 1"
 				@selected-pokemon="$emit('selected-pokemon', pokemon.name)"

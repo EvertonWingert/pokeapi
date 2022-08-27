@@ -6,8 +6,12 @@ export async function useFetch(url) {
 	}
 
 	const response = await fetch(url);
-	const json = await response.json();
 
+	if (!response.ok) {
+		throw new Error("Request failed");
+	}
+
+	const json = await response.json();
 	cache.set(url, json);
 
 	return json;
