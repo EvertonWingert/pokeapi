@@ -14,6 +14,7 @@
 	const pokemons = ref([]);
 	const nextURL = ref(config.POKE_API);
 	const isLoadingPokemons = ref(false);
+	const pokeName = ref(null);
 	const isTyping = ref(false);
 	let typingTimer;
 
@@ -25,19 +26,23 @@
 		isLoadingPokemons.value = false;
 	}
 
-	async function searchPokemon(event) {
+	async function searchPokemon(name) {
+		router.push({
+			name: "pokemon",
+			params: {
+				name: name,
+			},
+		});
+	}
+
+	watch(pokeName, () => {
 		isTyping.value = true;
 		clearTimeout(typingTimer);
 		typingTimer = setTimeout(() => {
 			isTyping.value = false;
-			router.push({
-				name: "pokemon",
-				params: {
-					name: event.target.value,
-				},
-			});
+			searchPokemon(pokeName.value);
 		}, 500);
-	}
+	});
 
 	onMounted(() => {
 		fetchPokemons(nextURL.value);
@@ -53,7 +58,7 @@
 			<div class="py-5 flex justify-between flex-wrap">
 				<h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-50">Pokedex</h1>
 				<div class="flex items-center gap-2 mt-5 sm:mt-0">
-					<Input type="text" @input="searchPokemon" placeholder="Busque um pokemon" name="search-pokemon">
+					<Input type="text" v-model="pokeName" placeholder="Busque um pokemon" name="search-pokemon">
 						<template #left-addon>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
